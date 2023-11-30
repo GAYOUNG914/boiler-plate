@@ -49,9 +49,20 @@ userSchema.pre('save',function(next){
         });
     });
 
+  }else {
+    next();
   }
 
+  userSchema.methods.comparePassword = function(plainPassword, cb) {
 
+    //패스워드를 복호화 할 수 없기때문에 plainPassword를 암호화해서 암호화 된 데이터와 일치하는지 판단해야함
+    //plainPassword 1234567, 암호화된 비번 $2b$10$8XvQxT48hZ8LNCQU3UuBm.jt4ERBs/ASy6XkPdYzddDbhAuQ8MbTC
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
+      if(err) return cb(err),
+        cb(null, isMatch)
+    })
+
+  }
   
 
 }) //mongoose 메서드 pre()는 따옴표 내부의 메서드 이전에 어떠한 행동을 하게 하는 것임
